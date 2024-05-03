@@ -19,11 +19,13 @@ class _MyHomePageState extends State<MyHomePage> {
     notificationServices.getToken().then((value) {
       log(value);
     });
-    notificationServices.firebaseInit();
+    notificationServices.firebaseInit(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      backgroundColor: Colors.amber,
+    );
   }
 }

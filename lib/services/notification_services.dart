@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_push_notification/screens/message_screen.dart';
 
 class NotificationServices {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -35,6 +36,7 @@ class NotificationServices {
 
 // for local notification
   void localNotification(BuildContext context, RemoteMessage message) async {
+    print("i am in local notification");
     var androidInitializationSettings =
         const AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettings =
@@ -42,13 +44,19 @@ class NotificationServices {
 
     await _flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveBackgroundNotificationResponse: (details) {},
+      onDidReceiveNotificationResponse: (payload) {
+        print("i am i payload");
+        handleMessage(context, message);
+      },
     );
   }
 
 //for get the notification from firebase
-  void firebaseInit() {
+  void firebaseInit(BuildContext context) {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // print("message 1" + message.data['id'].toString());
+      print("message 2 " + message.data['type'].toString());
+      localNotification(context, message);
       showNotification(message);
     });
   }
@@ -78,5 +86,17 @@ class NotificationServices {
     });
   }
 
-  void handleMessage(BuildContext context, RemoteMessage message) {}
+  void handleMessage(BuildContext context, RemoteMessage message) {
+    print("type is--->>>" + message.data['type'].toString());
+    try {
+      if (message.data['type'] == "msg") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MessageScreen()),
+        );
+      }
+    } catch (e) {
+      print('Error navigating to MessageScreen: $e');
+    }
+  }
 }
