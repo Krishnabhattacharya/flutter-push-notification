@@ -5,7 +5,7 @@ const path = require("path");
 
 
 
-const fcmT = new fcm("YOUR API KEY");
+const fcmT = new fcm("YOUR KEY");
 const message = {
     notification: {
         title: "HLw",
